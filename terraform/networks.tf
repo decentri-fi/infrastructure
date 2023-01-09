@@ -42,8 +42,16 @@ resource "kubernetes_deployment" "defitrack-networks" {
           name              = "defitrack-${var.networks[count.index]}"
           image_pull_policy = "Always"
           volume_mount {
-            mount_path = "/config"
+            mount_path = "/application/config"
             name       = "config-volume"
+          }
+          env {
+            name  = "SPRING_PROFILES_ACTIVE"
+            value = "kubernetes"
+          }
+          env {
+            name = "SPRING_CONFIG_LOCATION"
+            value = "/application/config/application.properties"
           }
           port {
             container_port = 8080
