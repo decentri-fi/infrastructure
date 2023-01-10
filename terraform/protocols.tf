@@ -5,7 +5,7 @@ variable "protocols" {
     "olympusdao", "aave", "adamant", "apeswap", "aelin", "beefy", "compound", "balancer", "bancor", "beethovenx",
     "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap", "spirit", "spooky",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
-    "makerdao", "polygon-protocol", "looksrare"
+    "makerdao", "polygon-protocol", "looksrare", "dodo", "humandao"
 
   ]
 }
