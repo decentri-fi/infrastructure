@@ -5,14 +5,35 @@ variable "protocols" {
     "olympusdao", "aave", "adamant", "apeswap", "aelin", "beefy", "compound", "balancer", "bancor", "beethovenx",
     "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap", "spirit", "spooky",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
-    "makerdao", "polygon-protocol", "looksrare", "dodo", "humandao"
-
+    "makerdao", "polygon-protocol", "looksrare", "dodo", "humandao", "pooltogether", "velodrome", "lido", "qidao"
   ]
 }
 
 variable "base-image" {
   default = "Base Image to pull from"
   type    = string
+}
+
+resource "kubernetes_service" "defitrack-protocol-services" {
+    for_each = toset(var.protocols)
+
+    metadata {
+        name      = "defitrack-${each.value}"
+    }
+
+
+    spec {
+        selector = {
+          app = "defitrack-${each.value}"
+        }
+
+        port {
+          name = "http"
+          port = 8080
+          target_port = 8080
+          protocol = "TCP"
+        }
+    }
 }
 
 resource "kubernetes_deployment" "defitrack-protocols" {
