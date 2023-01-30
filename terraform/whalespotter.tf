@@ -97,3 +97,79 @@ resource "kubernetes_deployment" "whalespotter-web" {
     }
   }
 }
+
+resource "kubernetes_deployment" "whalespotter-runner" {
+  metadata {
+    name   = "whalespotter-runner"
+    labels = {
+      app : "whalespotter-runner"
+    }
+  }
+  spec {
+    replicas = "1"
+    selector {
+      match_labels = {
+        app : "whalespotter-runner"
+      }
+    }
+    strategy {
+      type = "RollingUpdate"
+    }
+    template {
+      metadata {
+        labels = {
+          app : "whalespotter-runner"
+        }
+      }
+      spec {
+        volume {
+          name = "config-volume"
+          config_map {
+            name = "whalespotter-runner"
+          }
+        }
+        container {
+          image             = "${var.base-image}:whalespotter-runner-production"
+          name              = "whalespotter-runner"
+          image_pull_policy = "Always"
+          volume_mount {
+            mount_path = "/application/config"
+            name       = "config-volume"
+          }
+          port {
+            container_port = 8080
+          }
+          readiness_probe {
+            http_get {
+              path = "/actuator/health"
+              port = 8080
+            }
+            initial_delay_seconds = 20
+            period_seconds        = 10
+            timeout_seconds       = 2
+            failure_threshold     = 1
+            success_threshold     = 1
+          }
+          liveness_probe {
+            http_get {
+              path = "/actuator/health"
+              port = 8080
+            }
+            initial_delay_seconds = 25
+            period_seconds        = 20
+            timeout_seconds       = 2
+            failure_threshold     = 1
+          }
+        }
+        image_pull_secrets {
+          name = "personal-docker-registry"
+        }
+        toleration {
+          key      = "node-role.kubernetes.io/master"
+          effect   = "NoSchedule"
+          operator = "Exists"
+        }
+      }
+    }
+  }
+}
