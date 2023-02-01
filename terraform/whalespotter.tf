@@ -1,4 +1,3 @@
-
 resource "kubernetes_service" "whalespotter-web" {
 
   metadata {
@@ -19,6 +18,27 @@ resource "kubernetes_service" "whalespotter-web" {
     }
 
     type = "NodePort"
+  }
+}
+
+
+resource "kubernetes_service" "whalespotter-runner" {
+
+  metadata {
+    name      = "whalespotter-runner"
+  }
+
+  spec {
+    selector = {
+      app = "whalespotter-runner"
+    }
+
+    port {
+      name = "http"
+      port = 8080
+      target_port = 8080
+      protocol = "TCP"
+    }
   }
 }
 
