@@ -2,7 +2,7 @@ variable "networks" {
   description = "networks that have their own service"
   type        = list(string)
   default     = [
-    "arbitrum", "avalanche", "binance", "ethereum", "fantom", "optimism", "polygon"
+    "arbitrum", "avalanche", "binance", "ethereum", "fantom", "optimism", "polygon", "starknet"
   ]
 }
 
@@ -15,7 +15,7 @@ resource "kubernetes_deployment" "defitrack-networks" {
     }
   }
   spec {
-    replicas = "1"
+    replicas = "2"
     selector {
       match_labels = {
         app : "defitrack-${var.networks[count.index]}"
