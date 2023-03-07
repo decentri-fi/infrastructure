@@ -6,7 +6,7 @@ variable "protocols" {
     "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap", "spirit", "spooky",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "humandao", "pooltogether", "velodrome", "lido", "qidao", "swapfish",
-    "chainlink", "tokemak", "aura"
+    "chainlink", "tokemak", "aura", "solidlizard"
   ]
 }
 
