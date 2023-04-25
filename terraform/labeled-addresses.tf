@@ -1,24 +1,38 @@
-variable "networks" {
-  description = "networks that have their own service"
-  type        = list(string)
-  default     = [
-    "arbitrum", "avalanche", "binance", "ethereum", "fantom", "optimism", "polygon", "starknet", "polygon-zkevm"
-  ]
+resource "kubernetes_service" "labeled-addresses" {
+
+  metadata {
+    name      = "labeled-addresses"
+  }
+
+  spec {
+    selector = {
+      app = "labeled-addresses"
+    }
+
+    port {
+      name = "http"
+      port = 8080
+      target_port = 8080
+      protocol = "TCP"
+    }
+
+    type = "NodePort"
+  }
 }
 
-resource "kubernetes_deployment" "defitrack-networks" {
-  count = length(var.networks)
+
+resource "kubernetes_deployment" "labeled-addresses" {
   metadata {
-    name   = "defitrack-${var.networks[count.index]}"
+    name   = "labeled-addresses"
     labels = {
-      app : "defitrack-${var.networks[count.index]}"
+      app : "labeled-addresses"
     }
   }
   spec {
-    replicas = "2"
+    replicas = "1"
     selector {
       match_labels = {
-        app : "defitrack-${var.networks[count.index]}"
+        app : "labeled-addresses"
       }
     }
     strategy {
@@ -27,31 +41,23 @@ resource "kubernetes_deployment" "defitrack-networks" {
     template {
       metadata {
         labels = {
-          app : "defitrack-${var.networks[count.index]}"
+          app : "labeled-addresses"
         }
       }
       spec {
         volume {
           name = "config-volume"
           config_map {
-            name = "defitrack-${var.networks[count.index]}"
+            name = "labeled-addresses"
           }
         }
         container {
-          image             = "${var.base-image}:${var.networks[count.index]}-production"
-          name              = "defitrack-${var.networks[count.index]}"
+          image             = "${var.base-image}:labeled-addresses-production"
+          name              = "labeled-addresses"
           image_pull_policy = "Always"
           volume_mount {
             mount_path = "/application/config"
             name       = "config-volume"
-          }
-          env {
-            name  = "SPRING_PROFILES_ACTIVE"
-            value = "kubernetes"
-          }
-          env {
-            name = "SPRING_CONFIG_LOCATION"
-            value = "/application/config/application.properties"
           }
           port {
             container_port = 8080
