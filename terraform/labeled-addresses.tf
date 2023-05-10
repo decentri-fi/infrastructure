@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "labeled-addresses" {
           }
           readiness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/readiness"
               port = 8080
             }
             initial_delay_seconds = 20
@@ -75,7 +75,7 @@ resource "kubernetes_deployment" "labeled-addresses" {
           }
           liveness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/liveness"
               port = 8080
             }
             initial_delay_seconds = 25

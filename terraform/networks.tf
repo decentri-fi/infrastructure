@@ -37,7 +37,15 @@ resource "kubernetes_deployment" "defitrack-networks" {
             name = "defitrack-${var.networks[count.index]}"
           }
         }
+        termination_grace_period_seconds = 30
         container {
+          lifecycle {
+            pre_stop {
+              exec {
+                command = ["/bin/sh", "-c", "sleep 10"]
+              }
+            }
+          }
           image             = "${var.base-image}:${var.networks[count.index]}-production"
           name              = "defitrack-${var.networks[count.index]}"
           image_pull_policy = "Always"
@@ -58,7 +66,7 @@ resource "kubernetes_deployment" "defitrack-networks" {
           }
           readiness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/readiness"
               port = 8080
             }
             initial_delay_seconds = 20
@@ -69,7 +77,7 @@ resource "kubernetes_deployment" "defitrack-networks" {
           }
           liveness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/liveness"
               port = 8080
             }
             initial_delay_seconds = 25

@@ -6,7 +6,7 @@ variable "protocols" {
     "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap", "spirit", "spooky",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "humandao", "pooltogether", "velodrome", "lido", "qidao", "swapfish",
-    "chainlink", "tokemak", "aura", "solidlizard", "camelot"
+    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur"
   ]
 }
 
@@ -71,7 +71,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           }
           readiness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/readiness"
               port = 8080
             }
             initial_delay_seconds = 20
@@ -82,7 +82,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           }
           liveness_probe {
             http_get {
-              path = "/actuator/health"
+              path = "/actuator/health/liveness"
               port = 8080
             }
             initial_delay_seconds = 25

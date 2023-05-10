@@ -1,5 +1,4 @@
 arbitrum
-avalanche
 binance
 ethereum
 fantom
