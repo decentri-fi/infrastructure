@@ -15,7 +15,7 @@ variable "networks" {
   description = "networks that have their own service"
   type        = list(string)
   default     = [
-    "arbitrum", "ethereum", "fantom", "optimism", "polygon", "starknet", "polygon-zkevm", "base"
+    "arbitrum", "ethereum", "fantom", "optimism", "polygon", "polygon-zkevm", "base"
   ]
 }
 
