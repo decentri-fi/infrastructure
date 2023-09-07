@@ -7,7 +7,7 @@ variable "protocols" {
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
-    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap"
+    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx"
   ]
 }
 
