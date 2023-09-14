@@ -7,7 +7,8 @@ variable "protocols" {
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
-    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx"
+    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx",
+    "aerodrome", "alienbase", "stakefish", "baseswap"
   ]
 }
 
@@ -409,8 +410,8 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/readiness"
               port = 8080
             }
-            initial_delay_seconds = 20
-            period_seconds        = 10
+            initial_delay_seconds = 5
+            period_seconds        = 5
             timeout_seconds       = 2
             failure_threshold     = 1
             success_threshold     = 1
@@ -420,8 +421,8 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/liveness"
               port = 8080
             }
-            initial_delay_seconds = 25
-            period_seconds        = 20
+            initial_delay_seconds = 10
+            period_seconds        = 15
             timeout_seconds       = 2
             failure_threshold     = 1
           }
