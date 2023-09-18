@@ -16,7 +16,7 @@ variable "networks" {
   description = "networks that have their own service"
   type        = list(string)
   default     = [
-    "arbitrum", "ethereum", "fantom", "optimism", "polygon", "polygon-zkevm", "base"
+    "arbitrum", "ethereum", "optimism", "polygon", "polygon-zkevm", "base"
   ]
 }
 
@@ -410,19 +410,27 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/readiness"
               port = 8080
             }
-            initial_delay_seconds = 5
+            initial_delay_seconds = 10
             period_seconds        = 5
             timeout_seconds       = 2
             failure_threshold     = 1
             success_threshold     = 1
+          }
+          startup_probe { //10 minutes worst case
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 8080
+            }
+            failure_threshold = 30
+            period_seconds = 20
           }
           liveness_probe {
             http_get {
               path = "/actuator/health/liveness"
               port = 8080
             }
-            initial_delay_seconds = 10
-            period_seconds        = 15
+            initial_delay_seconds = 5
+            period_seconds        = 5
             timeout_seconds       = 2
             failure_threshold     = 1
           }
