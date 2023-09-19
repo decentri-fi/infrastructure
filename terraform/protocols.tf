@@ -398,12 +398,30 @@ resource "kubernetes_deployment" "defitrack-protocols" {
         }
       }
       spec {
+        volume {
+          name = "config-volume"
+          config_map {
+            name = "defitrack-protocol"
+          }
+        }
         container {
           image             = "${var.base-image}:${var.protocols[count.index]}-production"
           name              = "defitrack-${var.protocols[count.index]}"
           image_pull_policy = "Always"
           port {
             container_port = 8080
+          }
+          env {
+            name  = "SPRING_PROFILES_ACTIVE"
+            value = "kubernetes"
+          }
+          env {
+            name  = "SPRING_CONFIG_LOCATION"
+            value = "/application/config/application.properties"
+          }
+          volume_mount {
+            mount_path = "/application/config"
+            name       = "config-volume"
           }
           readiness_probe {
             http_get {
@@ -421,8 +439,8 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/liveness"
               port = 8080
             }
-            failure_threshold = 30
-            period_seconds = 20
+            failure_threshold = 180
+            period_seconds = 30
           }
           liveness_probe {
             http_get {
