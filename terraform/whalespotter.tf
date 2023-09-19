@@ -1,3 +1,25 @@
+resource "kubernetes_service" "whalespotter-allowance-importer" {
+
+  metadata {
+    name      = "whalespotter-allowance-importer"
+  }
+
+  spec {
+    selector = {
+      app = "whalespotter-allowance-importer"
+    }
+
+    port {
+      name = "http"
+      port = 8080
+      target_port = 8080
+      protocol = "TCP"
+    }
+
+    type = "ClusterIP"
+  }
+}
+
 resource "kubernetes_service" "whalespotter-web" {
 
   metadata {
@@ -201,6 +223,89 @@ resource "kubernetes_deployment" "whalespotter-profit-calculator" {
             }
             initial_delay_seconds = 25
             period_seconds        = 20
+            timeout_seconds       = 2
+            failure_threshold     = 1
+          }
+        }
+        image_pull_secrets {
+          name = "personal-docker-registry"
+        }
+        toleration {
+          key      = "node-role.kubernetes.io/master"
+          effect   = "NoSchedule"
+          operator = "Exists"
+        }
+      }
+    }
+  }
+}
+resource "kubernetes_deployment" "whalespotter-allowance-importer" {
+  metadata {
+    name   = "whalespotter-allowance-importer"
+    labels = {
+      app : "whalespotter-allowance-importer"
+    }
+  }
+  spec {
+    replicas = "1"
+    selector {
+      match_labels = {
+        app : "whalespotter-allowance-importer"
+      }
+    }
+    strategy {
+      type = "RollingUpdate"
+    }
+    template {
+      metadata {
+        labels = {
+          app : "whalespotter-allowance-importer"
+        }
+      }
+      spec {
+        volume {
+          name = "config-volume"
+          config_map {
+            name = "whalespotter-allowance-importer"
+          }
+        }
+        container {
+          image             = "${var.base-image}:whalespotter-allowance-importer-production"
+          name              = "whalespotter-allowance-importer"
+          image_pull_policy = "Always"
+          volume_mount {
+            mount_path = "/application/config"
+            name       = "config-volume"
+          }
+          port {
+            container_port = 8080
+          }
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 8080
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 5
+            timeout_seconds       = 2
+            failure_threshold     = 1
+            success_threshold     = 1
+          }
+          startup_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 8080
+            }
+            failure_threshold = 20
+            period_seconds = 20
+          }
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 8080
+            }
+            initial_delay_seconds = 5
+            period_seconds        = 5
             timeout_seconds       = 2
             failure_threshold     = 1
           }
