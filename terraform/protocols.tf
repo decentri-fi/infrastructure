@@ -228,6 +228,11 @@ resource "kubernetes_deployment" "defitrack-networks" {
         }
         termination_grace_period_seconds = 30
         container {
+          env_from {
+            secret_ref {
+              name = "newrelic"
+            }
+          }
           lifecycle {
             pre_stop {
               exec {
@@ -249,6 +254,26 @@ resource "kubernetes_deployment" "defitrack-networks" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
+          }
+          env {
+            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JFR_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JMX_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_APP_NAME"
+            value = "defitrack-${var.networks[count.index]}"
           }
           port {
             container_port = 8080
@@ -323,6 +348,11 @@ resource "kubernetes_deployment" "defitrack-infra" {
           image             = "${var.base-image}:${var.infra[count.index]}-production"
           name              = "defitrack-${var.infra[count.index]}"
           image_pull_policy = "Always"
+          env_from {
+            secret_ref {
+              name = "newrelic"
+            }
+          }
           volume_mount {
             mount_path = "/application/config"
             name       = "config-volume"
@@ -334,6 +364,26 @@ resource "kubernetes_deployment" "defitrack-infra" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
+          }
+          env {
+            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JFR_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JMX_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_APP_NAME"
+            value = "defitrack-${var.infra[count.index]}"
           }
           port {
             container_port = 8080
@@ -408,6 +458,11 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           image             = "${var.base-image}:${var.protocols[count.index]}-production"
           name              = "defitrack-${var.protocols[count.index]}"
           image_pull_policy = "Always"
+          env_from {
+            secret_ref {
+              name = "newrelic"
+            }
+          }
           port {
             container_port = 8080
           }
@@ -418,6 +473,26 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
+          }
+          env {
+            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JFR_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_JMX_ENABLED"
+            value = "false"
+          }
+          env {
+            name = "NEW_RELIC_APP_NAME"
+            value = "defitrack-${var.protocols[count.index]}"
           }
           volume_mount {
             mount_path = "/application/config"
@@ -434,13 +509,13 @@ resource "kubernetes_deployment" "defitrack-protocols" {
             failure_threshold     = 1
             success_threshold     = 1
           }
-          startup_probe { //10 minutes worst case
+          startup_probe {
             http_get {
               path = "/actuator/health/liveness"
               port = 8080
             }
             failure_threshold = 180
-            period_seconds = 30
+            period_seconds = 60
           }
           liveness_probe {
             http_get {
