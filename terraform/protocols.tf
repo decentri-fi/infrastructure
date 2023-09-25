@@ -24,7 +24,7 @@ variable "infra" {
   description = "infra microservices"
   type        = list(string)
   default     = [
-    "erc20", "ens", "balance", "abi", "price", "api-gw", "statistics", "events", "nft"
+    "erc20", "ens", "balance", "abi", "price", "api-gw", "statistics", "events", "nft", "claimables"
   ]
 }
 
@@ -136,6 +136,23 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
               name = "decentrifi-track"
               port {
                 number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+    rule {
+      host = "claimables.decentri.fi"
+      http {
+        path {
+          path = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "defitrack-claimables"
+              port {
+                number = 8080
               }
             }
           }
