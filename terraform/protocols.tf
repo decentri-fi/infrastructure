@@ -81,9 +81,8 @@ resource "kubernetes_service" "defitrack-infra-services" {
   for_each = toset(var.infra)
 
   metadata {
-    name = "defitrack-${each.value}"
+    name        = "defitrack-${each.value}"
   }
-
 
   spec {
     selector = {
@@ -91,7 +90,7 @@ resource "kubernetes_service" "defitrack-infra-services" {
     }
 
     port {
-      name        = "http"
+      name        = "http-traffic"
       port        = 8080
       target_port = 8080
       protocol    = "TCP"
@@ -101,7 +100,7 @@ resource "kubernetes_service" "defitrack-infra-services" {
 
 resource "kubernetes_ingress_v1" "decentrifi-ingress" {
   metadata {
-    name = "decentrifi-ingress"
+    name        = "decentrifi-ingress"
     annotations = {
       "nginx.ingress.kubernetes.io/enable-cors" = "true"
     }
@@ -112,7 +111,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
       host = "decentri.fi"
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
@@ -129,7 +128,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
       host = "track.decentri.fi"
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
@@ -146,7 +145,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
       host = "claimables.decentri.fi"
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
@@ -163,7 +162,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
       host = "whalespotter.decentri.fi"
       http {
         path {
-          path = "/profit-calculator"
+          path      = "/profit-calculator"
           path_type = "Prefix"
           backend {
             service {
@@ -176,7 +175,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
         }
 
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
@@ -193,7 +192,7 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
       host = "api.decentri.fi"
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {
@@ -273,23 +272,23 @@ resource "kubernetes_deployment" "defitrack-networks" {
             value = "/application/config/application.properties"
           }
           env {
-            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JFR_ENABLED"
+            name  = "NEW_RELIC_JFR_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JMX_ENABLED"
+            name  = "NEW_RELIC_JMX_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_APP_NAME"
+            name  = "NEW_RELIC_APP_NAME"
             value = "defitrack-${var.networks[count.index]}"
           }
           port {
@@ -337,6 +336,11 @@ resource "kubernetes_deployment" "defitrack-infra" {
     labels = {
       app : "defitrack-${var.infra[count.index]}"
     }
+    annotations = {
+      "prometheus.io/path" : "/actuator/prometheus"
+      "prometheus.io/port" : "8080"
+      "prometheus.io/scrape" : "true"
+    }
   }
   spec {
     replicas = "1"
@@ -352,6 +356,11 @@ resource "kubernetes_deployment" "defitrack-infra" {
       metadata {
         labels = {
           app : "defitrack-${var.infra[count.index]}"
+        }
+        annotations = {
+          "prometheus.io/scrape" : "true"
+          "prometheus.io/port" : "8080"
+          "prometheus.io/path" : "/actuator/prometheus"
         }
       }
       spec {
@@ -383,23 +392,23 @@ resource "kubernetes_deployment" "defitrack-infra" {
             value = "/application/config/application.properties"
           }
           env {
-            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JFR_ENABLED"
+            name  = "NEW_RELIC_JFR_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JMX_ENABLED"
+            name  = "NEW_RELIC_JMX_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_APP_NAME"
+            name  = "NEW_RELIC_APP_NAME"
             value = "defitrack-${var.infra[count.index]}"
           }
           port {
@@ -492,23 +501,23 @@ resource "kubernetes_deployment" "defitrack-protocols" {
             value = "/application/config/application.properties"
           }
           env {
-            name = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
+            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JFR_ENABLED"
+            name  = "NEW_RELIC_JFR_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_SPAN_EVENTS_ENABLED"
+            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_JMX_ENABLED"
+            name  = "NEW_RELIC_JMX_ENABLED"
             value = "false"
           }
           env {
-            name = "NEW_RELIC_APP_NAME"
+            name  = "NEW_RELIC_APP_NAME"
             value = "defitrack-${var.protocols[count.index]}"
           }
           volume_mount {
@@ -532,7 +541,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               port = 8080
             }
             failure_threshold = 180
-            period_seconds = 60
+            period_seconds    = 60
           }
           liveness_probe {
             http_get {

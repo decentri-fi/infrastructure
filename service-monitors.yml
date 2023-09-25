@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: defitrack-claimables
+  labels:
+    release: prometheus
+    app.kubernetes.io/instance: prometheus
+  annotations:
+    "meta.helm.sh/release-name": "prometheus"
+    "meta.helm.sh/release-namespace": "default"
+spec:
+  selector:
+    matchLabels:
+      app: defitrack-claimables
+  endpoints:
+  - port: "http-traffic"
+    path: "/actuator/prometheus"
