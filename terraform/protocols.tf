@@ -82,6 +82,9 @@ resource "kubernetes_service" "defitrack-infra-services" {
 
   metadata {
     name        = "defitrack-${each.value}"
+    labels = {
+      team = "decentrifi"
+    }
   }
 
   spec {
