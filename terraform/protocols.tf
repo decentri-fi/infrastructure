@@ -24,7 +24,7 @@ variable "infra" {
   description = "infra microservices"
   type        = list(string)
   default     = [
-    "erc20", "ens", "balance", "abi", "price", "api-gw", "statistics", "events", "nft", "claimables"
+    "erc20", "ens", "balance", "price", "api-gw", "statistics", "events", "nft", "claimables"
   ]
 }
 
@@ -60,6 +60,9 @@ resource "kubernetes_service" "defitrack-network-services" {
 
   metadata {
     name = "defitrack-${each.value}"
+    labels = {
+      team = "decentrifi"
+    }
   }
 
 
@@ -221,6 +224,11 @@ resource "kubernetes_deployment" "defitrack-networks" {
     labels = {
       app : "defitrack-${var.networks[count.index]}"
     }
+    annotations = {
+      "prometheus.io/scrape" : "true"
+      "prometheus.io/port" : "8080"
+      "prometheus.io/path" : "/actuator/prometheus"
+    }
   }
   spec {
     replicas = "2"
@@ -237,6 +245,11 @@ resource "kubernetes_deployment" "defitrack-networks" {
         labels = {
           app : "defitrack-${var.networks[count.index]}"
         }
+        annotations = {
+          "prometheus.io/scrape" : "true"
+          "prometheus.io/port" : "8080"
+          "prometheus.io/path" : "/actuator/prometheus"
+        }
       }
       spec {
         volume {
@@ -247,11 +260,6 @@ resource "kubernetes_deployment" "defitrack-networks" {
         }
         termination_grace_period_seconds = 30
         container {
-          env_from {
-            secret_ref {
-              name = "newrelic"
-            }
-          }
           lifecycle {
             pre_stop {
               exec {
@@ -273,26 +281,6 @@ resource "kubernetes_deployment" "defitrack-networks" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
-          }
-          env {
-            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JFR_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JMX_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_APP_NAME"
-            value = "defitrack-${var.networks[count.index]}"
           }
           port {
             container_port = 8080
