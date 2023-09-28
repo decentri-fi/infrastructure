@@ -72,7 +72,7 @@ resource "kubernetes_service" "defitrack-network-services" {
     }
 
     port {
-      name        = "http"
+      name        = "http-traffic"
       port        = 8080
       target_port = 8080
       protocol    = "TCP"
