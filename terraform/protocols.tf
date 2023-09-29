@@ -3,7 +3,7 @@ variable "protocols" {
   type        = list(string)
   default     = [
     "olympusdao", "aave", "adamant", "apeswap", "aelin", "beefy", "compound", "balancer", "bancor", "beethovenx",
-    "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap", "spirit", "spooky",
+    "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
@@ -38,6 +38,9 @@ resource "kubernetes_service" "defitrack-protocol-services" {
 
   metadata {
     name = "defitrack-${each.value}"
+    labels = {
+      team = "decentrifi"
+    }
   }
 
 
@@ -47,7 +50,7 @@ resource "kubernetes_service" "defitrack-protocol-services" {
     }
 
     port {
-      name        = "http"
+      name        = "http-traffic"
       port        = 8080
       target_port = 8080
       protocol    = "TCP"
@@ -447,6 +450,11 @@ resource "kubernetes_deployment" "defitrack-protocols" {
     labels = {
       app : "defitrack-${var.protocols[count.index]}"
     }
+    annotations = {
+      "prometheus.io/scrape" : "true"
+      "prometheus.io/port" : "8080"
+      "prometheus.io/path" : "/actuator/prometheus"
+    }
   }
   spec {
     replicas = "1"
@@ -463,6 +471,11 @@ resource "kubernetes_deployment" "defitrack-protocols" {
         labels = {
           app : "defitrack-${var.protocols[count.index]}"
         }
+        annotations = {
+          "prometheus.io/scrape" : "true"
+          "prometheus.io/port" : "8080"
+          "prometheus.io/path" : "/actuator/prometheus"
+        }
       }
       spec {
         volume {
@@ -475,11 +488,6 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           image             = "${var.base-image}:${var.protocols[count.index]}-production"
           name              = "defitrack-${var.protocols[count.index]}"
           image_pull_policy = "Always"
-          env_from {
-            secret_ref {
-              name = "newrelic"
-            }
-          }
           port {
             container_port = 8080
           }
@@ -490,26 +498,6 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
-          }
-          env {
-            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JFR_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JMX_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_APP_NAME"
-            value = "defitrack-${var.protocols[count.index]}"
           }
           volume_mount {
             mount_path = "/application/config"
