@@ -8,7 +8,9 @@ variable "protocols" {
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
     "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx",
-    "aerodrome", "alienbase", "stakefish", "baseswap"
+    "aerodrome", "alienbase", "stakefish",
+    "baseswap",
+    "autoearn"
   ]
 }
 
