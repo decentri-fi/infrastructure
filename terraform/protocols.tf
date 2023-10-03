@@ -7,8 +7,18 @@ variable "protocols" {
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
-    "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx",
-    "aerodrome", "alienbase", "stakefish",
+    "chainlink",
+    "tokemak",
+    "aura",
+    "solidlizard",
+    "camelot",
+    "tornadocash",
+    "blur",
+    "cowswap",
+    "gmx",
+    "aerodrome",
+    "alienbase",
+    "stakefish",
     "baseswap",
     "autoearn",
     "moonwell"
@@ -488,7 +498,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           }
         }
         container {
-          image             = "${var.base-image}:${var.protocols[count.index]}-production"
+          image             = "${var.base-image}:unified-protocols-production"
           name              = "defitrack-${var.protocols[count.index]}"
           image_pull_policy = "Always"
           port {
@@ -497,6 +507,10 @@ resource "kubernetes_deployment" "defitrack-protocols" {
           env {
             name  = "SPRING_PROFILES_ACTIVE"
             value = "kubernetes"
+          }
+          env {
+            name = "COMPANY"
+            value = var.protocols[count.index]
           }
           env {
             name  = "SPRING_CONFIG_LOCATION"
