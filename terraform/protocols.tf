@@ -10,7 +10,8 @@ variable "protocols" {
     "chainlink", "tokemak", "aura", "solidlizard", "camelot", "tornadocash", "blur", "cowswap", "gmx",
     "aerodrome", "alienbase", "stakefish",
     "baseswap",
-    "autoearn"
+    "autoearn",
+    "moonwell"
   ]
 }
 
