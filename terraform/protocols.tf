@@ -21,7 +21,8 @@ variable "protocols" {
     "stakefish",
     "baseswap",
     "autoearn",
-    "moonwell"
+    "moonwell",
+    "arpa"
   ]
 }
 
