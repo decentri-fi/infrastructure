@@ -22,7 +22,8 @@ variable "protocols" {
     "baseswap",
     "autoearn",
     "moonwell",
-    "arpa"
+    "arpa",
+    "ovix"
   ]
 }
 
