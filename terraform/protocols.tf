@@ -3,7 +3,7 @@ variable "protocols" {
   type        = list(string)
   default     = [
     "olympusdao", "aave", "adamant", "apeswap", "aelin", "beefy", "compound", "balancer", "bancor", "beethovenx",
-    "dfyn", "dmm", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap",
+    "dfyn", "hop", "idex", "iron-bank", "kyberswap", "maplefinance", "mstable", "quickswap",
     "stargate", "sushiswap", "uniswap", "polycat", "convex", "curve", "dinoswap", "ribbon", "set", "wepiggy",
     "makerdao", "polygon-protocol", "looksrare", "dodo", "pooltogether", "velodrome", "lido", "qidao",
     "swapfish",
@@ -23,7 +23,8 @@ variable "protocols" {
     "autoearn",
     "moonwell",
     "arpa",
-    "ovix"
+    "ovix",
+    "gains"
   ]
 }
 
@@ -52,7 +53,7 @@ resource "kubernetes_service" "defitrack-protocol-services" {
   for_each = toset(var.protocols)
 
   metadata {
-    name = "defitrack-${each.value}"
+    name   = "defitrack-${each.value}"
     labels = {
       team = "decentrifi"
     }
@@ -77,7 +78,7 @@ resource "kubernetes_service" "defitrack-network-services" {
   for_each = toset(var.networks)
 
   metadata {
-    name = "defitrack-${each.value}"
+    name   = "defitrack-${each.value}"
     labels = {
       team = "decentrifi"
     }
@@ -102,7 +103,7 @@ resource "kubernetes_service" "defitrack-infra-services" {
   for_each = toset(var.infra)
 
   metadata {
-    name        = "defitrack-${each.value}"
+    name   = "defitrack-${each.value}"
     labels = {
       team = "decentrifi"
     }
@@ -480,6 +481,10 @@ resource "kubernetes_deployment" "defitrack-protocols" {
     }
     strategy {
       type = "RollingUpdate"
+      rolling_update {
+        max_surge       = 1
+        max_unavailable = "25%"
+      }
     }
     template {
       metadata {
@@ -511,7 +516,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
             value = "kubernetes"
           }
           env {
-            name = "COMPANY"
+            name  = "COMPANY"
             value = var.protocols[count.index]
           }
           env {
@@ -527,7 +532,6 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/readiness"
               port = 8080
             }
-            initial_delay_seconds = 10
             period_seconds        = 5
             timeout_seconds       = 2
             failure_threshold     = 1
@@ -538,18 +542,8 @@ resource "kubernetes_deployment" "defitrack-protocols" {
               path = "/actuator/health/liveness"
               port = 8080
             }
-            failure_threshold = 180
-            period_seconds    = 60
-          }
-          liveness_probe {
-            http_get {
-              path = "/actuator/health/liveness"
-              port = 8080
-            }
-            initial_delay_seconds = 5
-            period_seconds        = 5
-            timeout_seconds       = 2
-            failure_threshold     = 1
+            failure_threshold = 360
+            period_seconds    = 30
           }
         }
         image_pull_secrets {
@@ -567,6 +561,7 @@ resource "kubernetes_deployment" "defitrack-protocols" {
     kubernetes_deployment.defitrack-networks,
     kubernetes_deployment.defitrack-infra
   ]
+  wait_for_rollout = false
 }
 
 resource "kubernetes_deployment" "decentrifi-frontend" {
