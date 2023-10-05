@@ -24,7 +24,9 @@ variable "protocols" {
     "moonwell",
     "arpa",
     "ovix",
-    "gains"
+    "gains",
+    "radiant",
+    "swell"
   ]
 }
 
