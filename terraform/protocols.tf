@@ -261,7 +261,7 @@ resource "kubernetes_deployment" "defitrack-networks" {
     }
   }
   spec {
-    replicas = "2"
+    replicas = "1"
     selector {
       match_labels = {
         app : "defitrack-${var.networks[count.index]}"
@@ -411,26 +411,6 @@ resource "kubernetes_deployment" "defitrack-infra" {
           env {
             name  = "SPRING_CONFIG_LOCATION"
             value = "/application/config/application.properties"
-          }
-          env {
-            name  = "NEW_RELIC_DISTRIBUTED_TRACING_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JFR_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_SPAN_EVENTS_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_JMX_ENABLED"
-            value = "false"
-          }
-          env {
-            name  = "NEW_RELIC_APP_NAME"
-            value = "defitrack-${var.infra[count.index]}"
           }
           port {
             container_port = 8080
