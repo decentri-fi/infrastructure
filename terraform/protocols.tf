@@ -42,7 +42,16 @@ variable "infra" {
   description = "infra microservices"
   type        = list(string)
   default     = [
-    "erc20", "ens", "balance", "price", "api-gw", "statistics", "events", "nft", "claimables"
+    "erc20",
+    "ens",
+    "balance",
+    "price",
+    "api-gw",
+    "statistics",
+    "events",
+    "nft",
+    "claimables",
+    "meta"
   ]
 }
 
