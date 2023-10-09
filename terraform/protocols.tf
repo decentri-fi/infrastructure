@@ -26,7 +26,9 @@ variable "protocols" {
     "ovix",
     "gains",
     "radiant",
-    "swell"
+    "swell",
+    "trader-joe",
+    "thales"
   ]
 }
 
@@ -51,7 +53,8 @@ variable "infra" {
     "events",
     "nft",
     "claimables",
-    "meta"
+    "meta",
+    "swagger"
   ]
 }
 
@@ -188,6 +191,40 @@ resource "kubernetes_ingress_v1" "decentrifi-ingress" {
               name = "defitrack-claimables"
               port {
                 number = 8080
+              }
+            }
+          }
+        }
+      }
+    }
+    rule {
+      host = "swagger.decentri.fi"
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "defitrack-swagger"
+              port {
+                number = 8080
+              }
+            }
+          }
+        }
+      }
+    }
+    rule {
+      host = "grafana.decentri.fi"
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = "prometheus-grafana"
+              port {
+                number = 80
               }
             }
           }
