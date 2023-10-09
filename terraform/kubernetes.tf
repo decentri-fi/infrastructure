@@ -3,7 +3,19 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes",
     }
+    grafana = {
+      source = "grafana/grafana"
+    }
   }
+}
+
+provider "grafana" {
+  url  = "https://grafana.decentri.fi/"
+  auth = var.grafana-auth
+}
+
+variable "grafana-auth" {
+  type =  string
 }
 
 variable "host" {
