@@ -593,7 +593,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "{{container}}",
+          "legendFormat": "{{network}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -695,7 +695,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "{{container}}",
+          "legendFormat": "{{network}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -705,7 +705,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -713,13 +713,13 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Decentrifi Usage",
   "uid": "fc067bdf-f453-4b42-ab1d-5598a7165a0c",
-  "version": 16,
+  "version": 17,
   "weekStart": ""
 }
