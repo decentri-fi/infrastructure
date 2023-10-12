@@ -334,7 +334,7 @@ resource "kubernetes_deployment" "defitrack-networks" {
               }
             }
           }
-          image             = "${var.base-image}:${var.networks[count.index]}-production"
+          image             = "${var.base-image}:evm-production"
           name              = "defitrack-${var.networks[count.index]}"
           image_pull_policy = "Always"
           volume_mount {
