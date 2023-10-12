@@ -28,7 +28,8 @@ variable "protocols" {
     "radiant",
     "swell",
     "trader-joe",
-    "thales"
+    "thales",
+    "pika"
   ]
 }
 
