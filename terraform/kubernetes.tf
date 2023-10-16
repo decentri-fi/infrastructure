@@ -40,3 +40,7 @@ provider "kubernetes" {
   token = var.token
   cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
 }
+
+variable "base-image" {
+  type = string
+}
