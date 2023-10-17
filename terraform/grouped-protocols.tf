@@ -40,7 +40,7 @@ variable "group-ethereum" {
 
 variable "group-optimism" {
   type        = list(string)
-  default     = ["aelin", "trader-joe", "aura", "velodrome", "beethovenx", "thales"]
+  default     = ["aelin", "trader-joe", "aura", "velodrome", "beethovenx", "thales", "extra-finance", "ethos"]
 }
 
 variable "group-arbitrum" {
@@ -55,7 +55,7 @@ variable "group-base" {
 
 variable "group-polygon" {
   type        = list(string)
-  default     = ["adamant", "pooltogether", "tokemak", "set", "quickswap", "polycat", "dinoswap", "dfyn", "idex", "kyberswap", "apeswap", "dodo"]
+  default     = ["metavault", "sandbox", "adamant", "pooltogether", "tokemak", "set", "quickswap", "polycat", "dinoswap", "dfyn", "idex", "kyberswap", "apeswap", "dodo"]
 }
 
 variable "group-qidao" {
