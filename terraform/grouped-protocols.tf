@@ -45,7 +45,7 @@ variable "group-optimism" {
 
 variable "group-arbitrum" {
   type        = list(string)
-  default     = ["radiant", "gmx", "gains", "camelot", "solidlizard", "swapfish"]
+  default     = ["radiant", "gmx", "gains", "camelot", "solidlizard", "swapfish", "mux"]
 }
 
 variable "group-base" {
