@@ -55,12 +55,7 @@ variable "group-base" {
 
 variable "group-polygon" {
   type        = list(string)
-  default     = ["metavault", "sandbox", "adamant", "pooltogether", "tokemak", "set", "quickswap", "polycat", "dinoswap", "dfyn", "idex", "kyberswap", "apeswap", "dodo"]
-}
-
-variable "group-qidao" {
-  type        = list(string)
-  default     = ["qidao"]
+  default     = ["qidao", "metavault", "sandbox", "adamant", "pooltogether", "tokemak", "set", "polycat", "dinoswap", "dfyn", "idex", "kyberswap", "apeswap", "dodo"]
 }
 
 variable "group-polygon-zkevm" {
@@ -175,14 +170,6 @@ module "grouped-polygon-zkevm" {
   base-image = var.base-image
   group-name = "polygon-zkevm"
   companies = var.group-polygon-zkevm
-}
-
-module "grouped-polygon-qidao" {
-  source = "./modules/grouped-protocols"
-
-  base-image = var.base-image
-  group-name = "qidao"
-  companies = var.group-qidao
 }
 
 module "grouped-quickswap" {
