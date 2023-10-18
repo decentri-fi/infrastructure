@@ -68,6 +68,11 @@ variable "group-polygon-zkevm" {
   default     = ["ovix", "stargate"]
 }
 
+variable "group-quickswap" {
+  type        = list(string)
+  default     = ["quickswap"]
+}
+
 module "grouped-aave" {
   source = "./modules/grouped-protocols"
 
@@ -178,4 +183,12 @@ module "grouped-polygon-qidao" {
   base-image = var.base-image
   group-name = "qidao"
   companies = var.group-qidao
+}
+
+module "grouped-quickswap" {
+  source = "./modules/grouped-protocols"
+
+  base-image = var.base-image
+  group-name = "quickswap"
+  companies = var.group-quickswap
 }
